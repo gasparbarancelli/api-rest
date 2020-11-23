@@ -1,15 +1,12 @@
 package com.gasparbarancelli.restfulapi.author;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class AuthorServiceImpl implements AuthorService, CommandLineRunner {
+public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository authorRepository;
 
@@ -37,24 +34,9 @@ public class AuthorServiceImpl implements AuthorService, CommandLineRunner {
     public void deleteByIdOrElseThrow(@NonNull Long id) {
         if (authorRepository.existsById(id)) {
             authorRepository.deleteById(id);
+        } else {
+            throw new AuthorNotFoundException(id);
         }
-        throw new AuthorNotFoundException(id);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        var gaspar = Author.builder("Gaspar", "gaspar@gaspar.com")
-                .faceBook("facebook/gaspar")
-                .linkedIn("linkedin/gaspar")
-                .twitter("twitter/gaspar")
-                .summary("summary")
-                .build();
-
-        var junior = Author.builder("Junior", "junior@junior.com")
-                .faceBook("facebook/junior")
-                .summary("summary")
-                .build();
-        var authorList = List.of(gaspar, junior);
-        authorRepository.saveAll(authorList);
-    }
 }
