@@ -55,7 +55,7 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<?> newAuthor(@NonNull @Valid @RequestBody AuthorPersist authorPersist) {
+    public ResponseEntity<EntityModel<Author>> newAuthor(@NonNull @Valid @RequestBody AuthorPersist authorPersist) {
         var author = modelMapper.map(authorPersist, Author.class);
         var entityModel = authorModelAssembler.toModel(authorService.save(author));
 
@@ -65,7 +65,7 @@ public class AuthorController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> update(
+    public ResponseEntity<EntityModel<Author>> update(
             @NonNull @Valid @RequestBody AuthorPersist authorPersist,
             @NonNull @PathVariable Long id) {
         var author = authorService.findByIdOrElseThrow(id);
