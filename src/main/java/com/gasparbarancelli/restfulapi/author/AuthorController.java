@@ -58,7 +58,7 @@ public class AuthorController {
                 .collect(Collectors.toList());
 
         return CollectionModel.of(authors, linkTo(methodOn(AuthorController.class).all(size, page))
-                .withSelfRel());
+                .withSelfRel().withType("GET"));
     }
 
     @GetMapping("{id}")
@@ -91,13 +91,13 @@ public class AuthorController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@NonNull @PathVariable Long id) {
+    public ResponseEntity<Void> delete(@NonNull @PathVariable Long id) {
         authorService.deleteByIdOrElseThrow(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<?> updateAuthor(
+    public ResponseEntity<EntityModel<Author>> updateAuthor(
             @NonNull @PathVariable("id") Long id,
             @Valid @RequestBody AuthorUpdateDto authorUpdateDto) {
         Author author = authorService.findByIdOrElseThrow(id);
