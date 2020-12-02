@@ -3,11 +3,16 @@ package com.gasparbarancelli.restfulapi.author;
 import com.gasparbarancelli.restfulapi.author.dto.AuthorPersist;
 import com.gasparbarancelli.restfulapi.author.dto.AuthorUpdateDto;
 import com.gasparbarancelli.restfulapi.util.JsonUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +37,14 @@ public class AuthorController {
         this.authorService = authorService;
         this.authorModelAssembler = authorModelAssembler;
         this.modelMapper = modelMapper;
+    }
+
+    @GetMapping("teste/{id}")
+    @Operation(summary = "Metodo teste", responses = {
+            @ApiResponse(description = "Operação realizada com sucesso", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Author.class))),
+            @ApiResponse(responseCode = "404", description = "Registro nao encontrado", content = @Content(schema = @Schema(implementation = String.class)))})
+    public ResponseEntity<?> teste(@PathVariable("id") Long id) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Author nao encontrado");
     }
 
     @GetMapping
@@ -66,8 +79,8 @@ public class AuthorController {
 
     @PutMapping("{id}")
     public ResponseEntity<EntityModel<Author>> update(
-            @NonNull @Valid @RequestBody AuthorPersist authorPersist,
-            @NonNull @PathVariable Long id) {
+            @NonNull @PathVariable Long id,
+            @NonNull @Valid @RequestBody AuthorPersist authorPersist) {
         var author = authorService.findByIdOrElseThrow(id);
 
         modelMapper.map(authorPersist, author);
